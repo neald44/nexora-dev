@@ -1,4 +1,8 @@
-FROM kasmweb/debian-bookworm-desktop:1.17.0
+ARG KASM_VERSION=1.19.0
+
+FROM kasmweb/debian-bookworm-desktop:${KASM_VERSION}
+
+ARG KASM_VERSION
 
 USER root
 

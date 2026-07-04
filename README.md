@@ -1,15 +1,23 @@
 # Nexora Dev
 
-A custom development workspace built on Kasm Workspaces.
+A custom Kasm Workspace built to provide a reproducible, portable development environment.
 
 ## Goals
 
-- Consistent development environment
-- Fast workspace startup
-- Persistent developer tools
-- Reproducible Docker image
-- Optimized for Nexora development
+- Fast startup
+- Consistent tooling
+- Version-controlled configuration
+- Portable development environment
+- Docker-based builds
 
-## Base Image
+## Roadmap
 
-kasmweb/debian-bookworm-desktop:1.17.0
+- [x] Project initialization
+- [ ] Custom Docker image
+- [ ] Development tools
+- [ ] VS Code
+- [ ] Docker CLI
+- [ ] Node.js
+- [ ] Python
+- [ ] Starship prompt
+- [ ] Version 1.0

@@ -1,23 +1,16 @@
 #!/bin/bash
 set -e
 
-echo ""
-echo "======================================"
-echo " Nexora Dev Workspace v0.6.0"
-echo "======================================"
-echo ""
+echo "===================================="
+echo " Nexora Dev Workspace"
+echo "===================================="
 
-echo "Node:    $(node -v)"
-echo "Python:  $(python3 --version)"
-echo "Git:     $(git --version)"
-echo ""
+echo "Node: $(node --version 2>/dev/null || echo missing)"
+echo "NPM:  $(npm --version 2>/dev/null || echo missing)"
+echo "Python: $(python3 --version 2>/dev/null || echo missing)"
+echo "Git:   $(git --version 2>/dev/null || echo missing)"
 
-cd /workspace
-
-echo "Working directory: /workspace"
-echo ""
-echo "To start VS Code (inside container):"
-echo "  code-server --bind-addr 0.0.0.0:8080"
-echo ""
+echo "Workspace ready at /workspace"
+echo "===================================="
 
 exec bash

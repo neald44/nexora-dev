@@ -21,6 +21,7 @@ COPY docker/install-packages.sh /tmp/install-packages.sh
 RUN chmod +x /tmp/install-packages.sh && \
     /tmp/install-packages.sh && \
     rm /tmp/install-packages.sh
+
 # -----------------------------------------------------------------------------
 # Node.js 20 LTS
 # -----------------------------------------------------------------------------
@@ -43,6 +44,17 @@ RUN npm install -g \
 # VS Code Server
 # -----------------------------------------------------------------------------
 RUN curl -fsSL https://code-server.dev/install.sh | sh
+
+# -----------------------------------------------------------------------------
+# Configure Git and Shell
+# -----------------------------------------------------------------------------
+COPY docker/configure-git.sh /tmp/configure-git.sh
+COPY docker/configure-shell.sh /tmp/configure-shell.sh
+
+RUN chmod +x /tmp/configure-git.sh /tmp/configure-shell.sh && \
+    /tmp/configure-git.sh && \
+    /tmp/configure-shell.sh && \
+    rm /tmp/configure-git.sh /tmp/configure-shell.sh
 
 # -----------------------------------------------------------------------------
 # Workspace Layout

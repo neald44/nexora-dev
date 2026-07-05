@@ -37,9 +37,14 @@ RUN mkdir -p /workspace/frontend /workspace/backend /workspace/scripts /workspac
 # Permissions (Kasm user = 1000)
 RUN chown -R 1000:1000 /workspace
 
+# VS Code Server
+RUN curl -fsSL https://code-server.dev/install.sh | sh
+
 USER 1000
 
 WORKDIR /workspace
 
 COPY docker/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
+
+EXPOSE 8080

@@ -16,25 +16,11 @@ LABEL org.opencontainers.image.version="0.5.0"
 # -----------------------------------------------------------------------------
 # Core Linux Packages
 # -----------------------------------------------------------------------------
-RUN apt-get update && \
-    apt-get install -y \
-        git \
-        curl \
-        wget \
-        jq \
-        unzip \
-        zip \
-        build-essential \
-        ca-certificates \
-        gnupg \
-        lsb-release \
-        software-properties-common \
-        python3 \
-        python3-pip \
-        python3-venv && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+COPY docker/install-packages.sh /tmp/install-packages.sh
 
+RUN chmod +x /tmp/install-packages.sh && \
+    /tmp/install-packages.sh && \
+    rm /tmp/install-packages.sh
 # -----------------------------------------------------------------------------
 # Node.js 20 LTS
 # -----------------------------------------------------------------------------

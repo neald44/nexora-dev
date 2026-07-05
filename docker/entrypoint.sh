@@ -13,4 +13,5 @@ echo "Git:   $(git --version 2>/dev/null || echo missing)"
 echo "Workspace ready at /workspace"
 echo "===================================="
 
-exec bash
+# IMPORTANT: hand control back to Kasm startup chain
+exec /dockerstartup/vnc_startup.sh /dockerstartup/kasm_startup.sh "$@"

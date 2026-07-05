@@ -5,58 +5,81 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 USER root
 
-# Core tooling
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    wget \
-    jq \
-    unzip \
-    zip \
-    build-essential \
-    ca-certificates \
-    gnupg \
-    lsb-release \
-    software-properties-common \
-    python3 \
-    python3-pip \
-    python3-venv \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
+# -----------------------------------------------------------------------------
+# Image Metadata
+# -----------------------------------------------------------------------------
+LABEL maintainer="Derrick Neal"
+LABEL org.opencontainers.image.title="Nexora Dev Workspace"
+LABEL org.opencontainers.image.description="Custom Kasm development environment"
+LABEL org.opencontainers.image.version="0.5.0"
 
-# Node.js LTS (NodeSource)
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y nodejs
+# -----------------------------------------------------------------------------
+# Core Linux Packages
+# -----------------------------------------------------------------------------
+RUN apt-get update && \
+    apt-get install -y \
+        git \
+        curl \
+        wget \
+        jq \
+        unzip \
+        zip \
+        build-essential \
+        ca-certificates \
+        gnupg \
+        lsb-release \
+        software-properties-common \
+        python3 \
+        python3-pip \
+        python3-venv && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Optional global JS tooling
-RUN npm install -g npm@latest \
-    && npm install -g pnpm typescript nodemon
+# -----------------------------------------------------------------------------
+# Node.js 20 LTS
+# -----------------------------------------------------------------------------
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get update && \
+    apt-get install -y nodejs && \
+    node --version && \
+    npm --version
 
-# Workspace layout
-RUN mkdir -p /workspace/frontend /workspace/backend /workspace/scripts /workspace/notes
+# -----------------------------------------------------------------------------
+# Global JavaScript Development Tools
+# -----------------------------------------------------------------------------
+RUN npm install -g \
+    npm@latest \
+    pnpm \
+    typescript \
+    nodemon
 
-# Permissions (Kasm user = 1000)
-RUN chown -R 1000:1000 /workspace
-
+# -----------------------------------------------------------------------------
 # VS Code Server
+# -----------------------------------------------------------------------------
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
-# Node.js LTS
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
-    node -v && npm -v
+# -----------------------------------------------------------------------------
+# Workspace Layout
+# -----------------------------------------------------------------------------
+RUN mkdir -p \
+    /workspace/frontend \
+    /workspace/backend \
+    /workspace/scripts \
+    /workspace/notes
 
-RUN npm install -g pnpm nodemon
+# Give the Kasm user ownership
+RUN chown -R 1000:1000 /workspace
 
-WORKDIR /workspace/backend
-RUN npm install
-
-EXPOSE 3001
-
-USER 1000
-
+# -----------------------------------------------------------------------------
+# Runtime Configuration
+# -----------------------------------------------------------------------------
 WORKDIR /workspace
 
 COPY docker/entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+RUN chmod +x /entrypoint.sh
 
-EXPOSE 8080
+EXPOSE 3001 8080
+
+USER 1000
+
+ENTRYPOINT ["/entrypoint.sh"]

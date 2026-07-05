@@ -75,4 +75,4 @@ EXPOSE 3001 8080
 
 USER 1000
 
-ENTRYPOINT ["/entrypoint.sh"]
+#ENTRYPOINT ["/entrypoint.sh"]

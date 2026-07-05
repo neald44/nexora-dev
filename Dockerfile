@@ -1,25 +1,45 @@
 ARG KASM_VERSION=1.19.0
-
 FROM kasmweb/debian-bookworm-desktop:${KASM_VERSION}
 
-ARG KASM_VERSION
+ARG DEBIAN_FRONTEND=noninteractive
 
 USER root
 
-LABEL maintainer="Derrick Neal"
-LABEL org.opencontainers.image.title="Nexora Development Workspace"
-LABEL org.opencontainers.image.description="Custom Kasm development environment"
-LABEL org.opencontainers.image.version="0.1.0"
-
+# Core tooling
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     wget \
     jq \
-    htop \
-    tree \
     unzip \
     zip \
+    build-essential \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    software-properties-common \
+    python3 \
+    python3-pip \
+    python3-venv \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Node.js LTS (NodeSource)
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
+    apt-get install -y nodejs
+
+# Optional global JS tooling
+RUN npm install -g npm@latest \
+    && npm install -g pnpm typescript nodemon
+
+# Workspace layout
+RUN mkdir -p /workspace/frontend /workspace/backend /workspace/scripts /workspace/notes
+
+# Permissions (Kasm user = 1000)
+RUN chown -R 1000:1000 /workspace
+
 USER 1000
+
+WORKDIR /workspace
+
+COPY docker/entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

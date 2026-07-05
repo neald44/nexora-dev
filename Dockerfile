@@ -11,7 +11,7 @@ USER root
 LABEL maintainer="Derrick Neal"
 LABEL org.opencontainers.image.title="Nexora Dev Workspace"
 LABEL org.opencontainers.image.description="Custom Kasm development environment"
-LABEL org.opencontainers.image.version="0.5.0"
+LABEL org.opencontainers.image.version="0.8.0"
 
 # -----------------------------------------------------------------------------
 # Core Linux Packages
@@ -23,22 +23,20 @@ RUN chmod +x /tmp/install-packages.sh && \
     rm /tmp/install-packages.sh
 
 # -----------------------------------------------------------------------------
-# Node.js 20 LTS
+# Developer Toolchain
 # -----------------------------------------------------------------------------
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get update && \
-    apt-get install -y nodejs && \
-    node --version && \
-    npm --version
 
-# -----------------------------------------------------------------------------
-# Global JavaScript Development Tools
-# -----------------------------------------------------------------------------
-RUN npm install -g \
-    npm@latest \
-    pnpm \
-    typescript \
-    nodemon
+COPY docker/install-node.sh /tmp/install-node.sh
+COPY docker/install-code-server.sh /tmp/install-code-server.sh
+
+RUN chmod +x \
+    /tmp/install-node.sh \
+    /tmp/install-code-server.sh && \
+    /tmp/install-node.sh && \
+    /tmp/install-code-server.sh && \
+    rm \
+    /tmp/install-node.sh \
+    /tmp/install-code-server.sh
 
 # -----------------------------------------------------------------------------
 # VS Code Server
@@ -46,7 +44,7 @@ RUN npm install -g \
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 # -----------------------------------------------------------------------------
-# Configure Git and Shell
+# Developer Configuration
 # -----------------------------------------------------------------------------
 COPY docker/configure-git.sh /tmp/configure-git.sh
 COPY docker/configure-shell.sh /tmp/configure-shell.sh
@@ -59,14 +57,11 @@ RUN chmod +x /tmp/configure-git.sh /tmp/configure-shell.sh && \
 # -----------------------------------------------------------------------------
 # Workspace Layout
 # -----------------------------------------------------------------------------
-RUN mkdir -p \
-    /workspace/frontend \
-    /workspace/backend \
-    /workspace/scripts \
-    /workspace/notes
+COPY docker/create-workspace.sh /tmp/
 
-# Give the Kasm user ownership
-RUN chown -R 1000:1000 /workspace
+RUN chmod +x /tmp/create-workspace.sh && \
+    /tmp/create-workspace.sh && \
+    rm /tmp/create-workspace.sh
 
 # -----------------------------------------------------------------------------
 # Runtime Configuration

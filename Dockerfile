@@ -40,6 +40,18 @@ RUN chown -R 1000:1000 /workspace
 # VS Code Server
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
+# Node.js LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    node -v && npm -v
+
+RUN npm install -g pnpm nodemon
+
+WORKDIR /workspace/backend
+RUN npm install
+
+EXPOSE 3001
+
 USER 1000
 
 WORKDIR /workspace

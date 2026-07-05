@@ -3,7 +3,7 @@ set -e
 
 echo ""
 echo "======================================"
-echo " Nexora Dev Workspace v0.5.0"
+echo " Nexora Dev Workspace v0.6.0"
 echo "======================================"
 echo ""
 
